@@ -7,7 +7,6 @@
         {% for repo in repositories %}
             {% if repo.get_pulls(state="closed").totalCount %}
                 <h2>"Full name: {{ repo.full_name }}" </h2>
-
             {% endif %}
         {% endfor %}
     {% endif %}

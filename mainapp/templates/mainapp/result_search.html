@@ -4,10 +4,15 @@
     {% if error %}
             <h2>{{ error }}</h2>
     {% else %}
-        {% for repo in repositories %}
-            {% if repo.get_pulls(state="closed").totalCount %}
-                <h2>"Full name: {{ repo.full_name }}" </h2>
-            {% endif %}
+        {% for repo in repositories%}
+            {% for info in repo%}
+                {% ifequal info repo|first %}
+                    <div><h2> {{ repo|first }} </h2><div>
+                {% else %}
+                    <div><p> {{ info }} </p><div>
+                {% endifequal %}
+            {% endfor %}
+            <br>
         {% endfor %}
     {% endif %}
 {% endblock %}

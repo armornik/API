@@ -4,6 +4,7 @@ from django.conf import settings
 from github import Github
 
 from mainapp.models import SearchUser
+from mainapp.utils import repository_info
 
 # get pygithub object
 g = Github(settings.GITHUB_TOKEN)
@@ -20,9 +21,16 @@ def index(request):
             try:
                 # get data user by username
                 user = g.get_user(request.POST['username'])
+
                 # get info about repositories
-                repositories = user.get_repos()
-                context = {'repos': repositories}
+                github_repositories = user.get_repos()
+                repositories = []
+
+                for repo in github_repositories:
+                    # check have repository closed pull
+                    if repo.get_pulls(state="closed").totalCount:
+                        repositories.append(repository_info(repo))
+                context = {'repositories': repositories}
                 return render(request, 'mainapp/result_search.html', context)
             except Exception as e:
                 print(e)
@@ -31,3 +39,4 @@ def index(request):
     else:
         form = SearchUser()
     return render(request, 'mainapp/index.html', {'form': form})
+

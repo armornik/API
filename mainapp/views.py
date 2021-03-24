@@ -7,7 +7,7 @@ from mainapp.models import SearchUser
 from mainapp.utils import repository_info
 
 # get pygithub object
-g = Github(settings.GITHUB_TOKEN)
+pygithub_object = Github(settings.GITHUB_TOKEN)
 
 
 # Create your views here.
@@ -20,7 +20,7 @@ def index(request):
             # checking for the existence of a user in GitHub
             try:
                 # get data user by username
-                user = g.get_user(request.POST['username'])
+                user = pygithub_object.get_user(request.POST['username'])
 
                 # get info about repositories
                 github_repositories = user.get_repos()
@@ -29,6 +29,7 @@ def index(request):
                 for repo in github_repositories:
                     # check have repository closed pull
                     if repo.get_pulls(state="closed").totalCount:
+                        print(type(repo))
                         repositories.append(repository_info(repo))
                 context = {'repositories': repositories}
                 return render(request, 'mainapp/result_search.html', context)
